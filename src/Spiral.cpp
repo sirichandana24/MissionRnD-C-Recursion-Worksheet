@@ -33,40 +33,53 @@ Note : Check the function Parameters ,Its a double pointer .
 
 #include "stdafx.h"
 #include<stdlib.h>
-int* spiral1(int, int, int, int,int**);
+int *spiral_rec(int, int, int **);
+void spiral1(int**,int*,int,int, int, int, int);
 int *spiral(int rows, int columns, int **input_array)
 {
-	int *arr,*res;
-	int x1 = 0, y1 = 0, x2 = rows - 1, y2 = columns - 1;
-	arr = (int*)malloc((rows*columns)*sizeof(int));
-	res=spiral1(x1, x2, y1, y2,input_array);
+	int *res,index=0;
+	int r=0 , c=0 ;
+	if (rows<=0 || columns<=0 )
+	{
+		res = NULL;
+		return res;
+	}
+		if (input_array == NULL)
+		return NULL;
+	res = (int*)malloc((rows*columns)*sizeof(int));
+	spiral1(input_array,res,index,rows, columns,r,c );
 	return res;
 }
-int* spiral1(int x1, int x2, int y1, int y2, int **input_array)
+void spiral1(int **input_array,int *res, int index, int rows, int columns, int r=0, int c=0)
 {
-	int i = 0, *res;
-	res = (int*)malloc(100 * sizeof(int));
-	if (x2 < x1 || y2 < y1)
-		return res;
-	for (i = 0; i <= x2 - x1; i++)
+	int i = 0;
+	if (rows == 1 && columns == 1)
 	{
-		*res = input_array[y1][x1 + i];
-		res++;
+		res[index++] = input_array[r][c];
 	}
-	for (i = 1; i <= y2 - y1; i++)
+	for (i = c; i <= c + columns - 1; i++)
 	{
-		*res = input_array[y1 + i][x2];
-		res++;
+		res[index++] = input_array[r][i];
 	}
-	for (i = 1; i <= x2 - x1; i++)
+	for (i = r + 1; i <= r + rows - 1; i++)
 	{
-		*res = input_array[y2][x2 - i];
-		res++;
+		res[index++] = input_array[i][c + columns - 1];
 	}
-	for (i = 1; i <= y2 - y1; i++)
-	{
-		*res = input_array[y2 - i][x1];
-		res++;
-	}
-	spiral1(x1 + 1, x2 - 1, y1 + 1, y2 - 1,input_array);
+	if (rows != 1)
+		for (i = c + columns - 2; i > c; i--)
+		{
+			res[index++] = input_array[r + rows - 1][i];
+
+		}
+	if (columns != 1)
+		for (i = r + rows - 1; i > r; i--)
+		{
+			res[index++] = input_array[i][c];
+
+		}
+	if (rows - 2 <= 0 || columns - 2 <= 0)
+		return;
+	else
+		spiral1(input_array, res, index, rows - 2, columns - 2, r + 1, c + 1);
+	return;
 }
